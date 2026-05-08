@@ -77,9 +77,6 @@ logs/
 Online-Computer-Shop/
 ├── config/              # Configuration files
 │   ├── db.php          # Database connection
-│   ├── bootstrap.php   # Application initialization
-│   ├── Validator.php   # Validation utilities
-│   └── helpers.php     # Helper functions
 ├── controllers/         # Request handlers
 │   └── Controller.php   # Base controller class
 ├── models/             # Data models
