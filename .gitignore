@@ -1,0 +1,57 @@
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+*.sublime-project
+*.sublime-workspace
+
+# Logs
+logs/
+*.log
+
+# Dependencies
+vendor/
+node_modules/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Uploads (specific files, but keep structure)
+public/uploads/products/*.jpg
+public/uploads/products/*.jpeg
+public/uploads/products/*.png
+public/uploads/products/*.gif
+public/uploads/*.jpg
+public/uploads/*.jpeg
+public/uploads/*.png
+public/uploads/*.gif
+
+# OS files
+Thumbs.db
+.DS_Store
+
+# PHP
+.php-version
+*.phar
+
+# Composer
+composer.lock
+
+# NPM
+package-lock.json
+yarn.lock
+
+# IDE
+.phpstorm.meta.php
+.idea/
+
+# Session files
+session/
+
+# Cache
+.cache/
