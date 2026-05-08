@@ -1,1 +1,11 @@
 And We also have a repository for all code practice code submitted there so I want to use that repository for our project. The repository that we already have is - learning-web-technologies-spring2025-2026-sec-d. 
+
+git push for all team members -
+
+1.git push origin feature/task1-22-48356-3
+
+2.git push origin feature/task2-22-48412-3
+
+3.git push origin feature/task3-22-48484-3
+
+4.git push origin feature/task4-22-49926-3
