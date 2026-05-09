@@ -19,3 +19,4 @@ if (emailExists($email)) {
 } else {
     echo json_encode(['status' => true, 'available' => true, 'message' => 'email available']);
 }
+?>

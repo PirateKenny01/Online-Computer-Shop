@@ -38,3 +38,4 @@ function getProductsByTopCategory($category_id)
     mysqli_close($con);
     return $products;
 }
+?>

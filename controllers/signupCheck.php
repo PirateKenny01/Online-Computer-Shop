@@ -34,6 +34,7 @@ if (isset($_POST['signup_submit'])) {
         $_SESSION['signup_errors'] = $errors;
         $_SESSION['signup_old'] = ['name' => $name, 'email' => $email];
         header('location: ../views/signup.php');
+        exit();
     } else {
         $user = [
             'name' => $name,
@@ -45,12 +46,15 @@ if (isset($_POST['signup_submit'])) {
         if (addUser($user)) {
             $_SESSION['msg'] = "registration successful. please login.";
             header('location: ../views/login.php');
+            exit();
         } else {
             $_SESSION['signup_errors'] = ['db' => 'registration failed!'];
             $_SESSION['signup_old'] = ['name' => $name, 'email' => $email];
             header('location: ../views/signup.php');
+            exit();
         }
     }
 } else {
     echo "invalid request!";
 }
+?>

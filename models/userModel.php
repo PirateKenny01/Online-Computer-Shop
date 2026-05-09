@@ -168,3 +168,4 @@ function updateUserPassword($id, $new_hash)
     mysqli_close($con);
     return $status;
 }
+?>

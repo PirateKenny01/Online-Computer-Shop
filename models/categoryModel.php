@@ -34,3 +34,4 @@ function getCategoryById($id)
     mysqli_close($con);
     return $category;
 }
+?>

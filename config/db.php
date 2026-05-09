@@ -5,7 +5,6 @@ $dbuser = "root";
 $dbpassword = "";
 $dbname = "ocs";
 
-
 function getConnection()
 {
     global $host;
@@ -13,3 +12,4 @@ function getConnection()
     $con = mysqli_connect($host, $dbuser, $GLOBALS['dbpassword'], $GLOBALS['dbname']);
     return $con;
 }
+?>

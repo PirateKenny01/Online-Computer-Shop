@@ -11,6 +11,7 @@ if (isset($_POST['login_submit'])) {
         $_SESSION['login_error'] = "null email/password!";
         $_SESSION['login_old_email'] = $email;
         header('location: ../views/login.php');
+        exit();
     } else {
         $user = getUserByEmail($email);
 
@@ -30,12 +31,15 @@ if (isset($_POST['login_submit'])) {
             }
 
             header('location: ../views/home.php');
+            exit();
         } else {
             $_SESSION['login_error'] = "invalid email/password!";
             $_SESSION['login_old_email'] = $email;
             header('location: ../views/login.php');
+            exit();
         }
     }
 } else {
     echo "invalid request!";
 }
+?>
