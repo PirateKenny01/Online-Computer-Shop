@@ -14,9 +14,11 @@
             }else{
                 setcookie('remember_token', '', time()-10, '/');
                 header('location: login.php');
+                exit();
             }
         }else{
             header('location: login.php');
+            exit();
         }
     }
 
@@ -25,6 +27,7 @@
         session_destroy();
         setcookie('remember_token', '', time()-10, '/');
         header('location: login.php');
+        exit();
     }
 
     $profileErrors = isset($_SESSION['profile_errors']) ? $_SESSION['profile_errors'] : [];
@@ -44,10 +47,9 @@
     <title>Profile</title>
 </head>
 <body>
+    <?php include('partials/navbar.php'); ?>
+
     <h1>Profile</h1>
-    <a href="home.php">Home</a> |
-    <a href="../controllers/logout.php">Logout</a>
-    <br><br>
 
     <p style="color:green;"><?php if(isset($_SESSION['profile_success'])){ echo $_SESSION['profile_success']; unset($_SESSION['profile_success']); } ?></p>
 

@@ -2,6 +2,7 @@
     session_start();
     if(!isset($_SESSION['role']) || $_SESSION['role'] != 'admin'){
         header('location: login.php');
+        exit();
     }
 
     $errors = isset($_SESSION['admin_create_errors']) ? $_SESSION['admin_create_errors'] : [];
@@ -15,6 +16,8 @@
     <title>Admin Create User</title>
 </head>
 <body>
+    <?php include('partials/navbar.php'); ?>
+
     <h1>Admin Dashboard - Create User</h1>
     <p style="color:green;"><?php if(isset($_SESSION['msg'])){echo $_SESSION['msg']; unset($_SESSION['msg']);} ?></p>
     <p id="form_msg" style="color:red;"><?php if(isset($errors['form'])){echo $errors['form'];} ?></p>

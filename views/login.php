@@ -11,6 +11,7 @@
             $_SESSION['name'] = $user['name'];
             $_SESSION['role'] = $user['role'];
             header('location: home.php');
+            exit();
         }else{
             setcookie('remember_token', '', time()-10, '/');
         }
@@ -18,6 +19,7 @@
 
     if(isset($_SESSION['user_id'])){
         header('location: home.php');
+        exit();
     }
 ?>
 <!DOCTYPE html>
@@ -26,6 +28,8 @@
     <title>Login</title>
 </head>
 <body>
+    <?php include('partials/navbar.php'); ?>
+
     <h1>Login</h1>
     <p style="color:green;"><?php if(isset($_SESSION['msg'])){ echo $_SESSION['msg']; unset($_SESSION['msg']); } ?></p>
     <p style="color:red;"><?php if(isset($_SESSION['login_error'])){ echo $_SESSION['login_error']; unset($_SESSION['login_error']); } ?></p>

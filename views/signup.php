@@ -11,6 +11,8 @@
     <title>Signup</title>
 </head>
 <body>
+    <?php include('partials/navbar.php'); ?>
+
     <h1>Signup</h1>
     <p id="form_msg" style="color:red;"><?php if(isset($errors['form'])){echo $errors['form'];} ?></p>
 

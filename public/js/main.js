@@ -44,8 +44,6 @@ function validateSignup(){
     msg.innerHTML = "";
     return true;
 }
-<<<<<<< Updated upstream
-=======
 
 function validateProfileUpdate(){
     let name = document.getElementById('profile_name').value.trim();
@@ -90,4 +88,3 @@ function validatePasswordChange(){
     msg.innerHTML = "";
     return true;
 }
->>>>>>> Stashed changes

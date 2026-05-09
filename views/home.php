@@ -14,9 +14,11 @@
             }else{
                 setcookie('remember_token', '', time()-10, '/');
                 header('location: login.php');
+                exit();
             }
         }else{
             header('location: login.php');
+            exit();
         }
     }
 ?>
@@ -26,8 +28,9 @@
     <title>Home</title>
 </head>
 <body>
+    <?php include('partials/navbar.php'); ?>
+
     <h1>Welcome <?php echo $_SESSION['name']; ?></h1>
     <p>Role: <?php echo $_SESSION['role']; ?></p>
-    <a href="../controllers/logout.php">Logout</a>
 </body>
 </html>
