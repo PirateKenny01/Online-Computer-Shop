@@ -1,0 +1,9 @@
+git push for all team members -
+
+1.git push origin feature/task1-22-48356-3
+
+2.git push origin feature/task2-22-48412-3
+
+3.git push origin feature/task3-22-48484-3
+
+4.git push origin feature/task4-22-49926-3
