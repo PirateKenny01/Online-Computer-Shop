@@ -4,6 +4,7 @@
 
     if(!isset($_SESSION['role']) || $_SESSION['role'] != 'admin'){
         header('location: ../views/login.php');
+        exit();
     }
 
     if(isset($_POST['admin_create_submit'])){
@@ -43,6 +44,7 @@
             $_SESSION['admin_create_errors'] = $errors;
             $_SESSION['admin_create_old'] = ['name'=>$name, 'email'=>$email, 'role'=>$role];
             header('location: ../views/admin_create_user.php');
+            exit();
         }else{
             $user = [
                 'name' => $name,
@@ -56,7 +58,9 @@
             }else{
                 $_SESSION['msg'] = "user create failed.";
             }
+
             header('location: ../views/admin_create_user.php');
+            exit();
         }
     }else{
         echo "invalid request!";

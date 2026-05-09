@@ -1,4 +1,4 @@
 <?php
-    header('location: views/login.php');
+    header('location: views/home.php');
     exit();
 ?>

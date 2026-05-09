@@ -4,6 +4,7 @@
 
     if(!isset($_SESSION['user_id'])){
         header('location: ../views/login.php');
+        exit();
     }
 
     if(isset($_POST['profile_update_submit'])){
@@ -74,6 +75,7 @@
             $_SESSION['profile_errors'] = $errors;
             $_SESSION['profile_old'] = ['name'=>$name, 'email'=>$email];
             header('location: ../views/profile.php');
+            exit();
         }else{
             $user = [
                 'id' => $id,
@@ -98,6 +100,7 @@
             }
 
             header('location: ../views/profile.php');
+            exit();
         }
     }else{
         echo "invalid request!";

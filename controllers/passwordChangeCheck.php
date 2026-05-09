@@ -4,6 +4,7 @@
 
     if(!isset($_SESSION['user_id'])){
         header('location: ../views/login.php');
+        exit();
     }
 
     if(isset($_POST['password_change_submit'])){
@@ -34,6 +35,7 @@
         if(count($errors) > 0){
             $_SESSION['password_errors'] = $errors;
             header('location: ../views/profile.php');
+            exit();
         }else{
             $new_hash = password_hash($new_password, PASSWORD_DEFAULT);
 
@@ -44,6 +46,7 @@
             }
 
             header('location: ../views/profile.php');
+            exit();
         }
     }else{
         echo "invalid request!";
