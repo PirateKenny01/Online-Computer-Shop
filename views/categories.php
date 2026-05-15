@@ -1,26 +1,110 @@
 <?php
-// Mock data for Category design
-$mainCategories = [
-    ['id' => 1, 'name' => 'Storage'],
-    ['id' => 2, 'name' => 'Monitor']
-];
+require_once('../config/db.php');
+require_once('../models/categoryManagementModel.php');
 
-$allCategories = [
-    ['id' => 1, 'name' => 'Storage', 'parent_id' => 0, 'parent_name' => null],
-    ['id' => 3, 'name' => 'SSD', 'parent_id' => 1, 'parent_name' => 'Storage'] // Example of sub-category 
-];
+$con = getConnection();
+
+// Get all categories
+$sql = "SELECT * FROM categories ORDER BY parent_id, name";
+$result = mysqli_query($con, $sql);
+$allCategories = [];
+while($row = mysqli_fetch_assoc($result)) 
+{
+    $allCategories[] = $row;
+}
+
+// Get main categories only (parent_id = NULL)
+$sqlMain = "SELECT * FROM categories WHERE parent_id IS NULL ORDER BY name";
+$resultMain = mysqli_query($con, $sqlMain);
+$mainCategories = [];
+while($row = mysqli_fetch_assoc($resultMain)) 
+{
+    $mainCategories[] = $row;
+}
+
+// Handle create
+if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action']) && $_POST['action'] == 'create') 
+{
+    $category = array(
+        'name' => $_POST['category_name'],
+        'parent_id' => $_POST['parent_id'] == 0 ? NULL : $_POST['parent_id']
+    );
+    $result = createCategory($category);
+    if($result) 
+    {
+        header("Location: categories.php");
+    }
+}
+
+// Handle edit
+if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action']) && $_POST['action'] == 'edit') 
+{
+    $category = array(
+        'id' => $_POST['cat_id'],
+        'name' => $_POST['category_name'],
+        'parent_id' => $_POST['parent_id'] == 0 ? NULL : $_POST['parent_id']
+    );
+    $result = editCategory($category);
+    if($result) 
+    {
+        header("Location: categories.php");
+    }
+}
+
+// Handle delete
+if(isset($_GET['delete'])) 
+{
+    $result = deleteCategory($_GET['delete']);
+    if(!$result) 
+    {
+        $deleteError = "Cannot delete! Category has child categories or products.";
+    } 
+    else 
+    {
+        header("Location: categories.php");
+    }
+}
+
+// Get edit data if edit is requested
+$editData = null;
+if(isset($_GET['edit'])) 
+{
+    $sqlEdit = "SELECT * FROM categories WHERE id = " . (int)$_GET['edit'];
+    $resultEdit = mysqli_query($con, $sqlEdit);
+    $editData = mysqli_fetch_assoc($resultEdit);
+}
+
 ?>
 
 <h1>Category Management</h1>
-<form action="category_action.php" method="POST">
-    <input type="text" name="category_name" placeholder="Category Name" required>
+
+<?php 
+    if(isset($deleteError)): ?>
+    <p style="color: red;"><?= $deleteError ?></p>
+<?php endif; 
+?>
+
+<form method="POST" action="">
+    <input type="hidden" name="action" value="<?= $editData ? 'edit' : 'create' ?>">
+    <?php if($editData): ?>
+        <input type="hidden" name="cat_id" value="<?= $editData['id'] ?>">
+    <?php endif; ?>
+    
+    <input type="text" name="category_name" placeholder="Category Name" value="<?= $editData ? $editData['name'] : '' ?>" required>
+    
     <select name="parent_id">
         <option value="0">None (Main Category)</option>
         <?php foreach($mainCategories as $cat): ?>
-            <option value="<?= $cat['id'] ?>"><?= $cat['name'] ?></option>
+            <?php if(!$editData || $editData['id'] != $cat['id']): ?>
+                <option value="<?= $cat['id'] ?>" <?= ($editData && $editData['parent_id'] == $cat['id']) ? 'selected' : '' ?>><?= $cat['name'] ?></option>
+            <?php endif; ?>
         <?php endforeach; ?>
     </select>
-    <button type="submit">Create Category</button>
+    
+    <button type="submit"><?= $editData ? 'Update Category' : 'Create Category' ?></button>
+    <?php if($editData): ?>
+        <a href="categories.php"><button type="button">Cancel</button></a>
+    <?php endif; ?>
 </form>
 
 <table border="1" width="100%">
@@ -34,10 +118,10 @@ $allCategories = [
     <tr>
         <td><?= $cat['id'] ?></td>
         <td><?= $cat['name'] ?></td>
-        <td><?= ($cat['parent_id'] == 0) ? "Main" : "Sub-category" ?></td>
+        <td><?= ($cat['parent_id'] == NULL) ? "Main" : "Sub-category" ?></td>
         <td>
             <a href="?edit=<?= $cat['id'] ?>">Edit</a> | 
-            <a href="?delete=<?= $cat['id'] ?>" onclick="return confirm('Note: Cannot delete if child categories or products exist.')">Delete</a>
+            <a href="?delete=<?= $cat['id'] ?>" onclick="return confirm('Delete this category? Cannot delete if it has child categories or products.')">Delete</a>
         </td>
     </tr>
     <?php endforeach; ?>
