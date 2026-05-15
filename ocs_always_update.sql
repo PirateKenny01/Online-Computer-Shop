@@ -2,10 +2,10 @@
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Host: localhost
--- Generation Time: May 09, 2026 at 11:22 PM
--- Server version: 10.4.28-MariaDB
--- PHP Version: 8.2.4
+-- Host: 127.0.0.1
+-- Generation Time: May 16, 2026 at 01:40 AM
+-- Server version: 10.4.32-MariaDB
+-- PHP Version: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -89,9 +89,7 @@ INSERT INTO `categories` (`id`, `name`, `parent_id`, `created_at`, `updated_at`)
 (6, 'Intel CPU', 1, '2026-05-09 19:00:17', '2026-05-09 19:00:17'),
 (7, 'AMD CPU', 1, '2026-05-09 19:00:17', '2026-05-09 19:00:17'),
 (8, 'DDR4 RAM', 3, '2026-05-09 19:00:17', '2026-05-09 19:00:17'),
-(9, 'DDR5 RAM', 3, '2026-05-09 19:00:17', '2026-05-09 19:00:17'),
-(10, 'SSD', 4, '2026-05-09 19:00:17', '2026-05-09 19:00:17'),
-(11, 'HDD', 4, '2026-05-09 19:00:17', '2026-05-09 19:00:17');
+(10, 'SSD', 4, '2026-05-09 19:00:17', '2026-05-09 19:00:17');
 
 -- --------------------------------------------------------
 
@@ -294,7 +292,7 @@ ALTER TABLE `cart`
 -- AUTO_INCREMENT for table `categories`
 --
 ALTER TABLE `categories`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT for table `orders`

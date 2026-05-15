@@ -23,7 +23,7 @@ while($row = mysqli_fetch_assoc($resBrands))
 }
 
 // Handle create
-if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action']) && $_POST['action'] == 'create') 
+if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action']) && $_POST['action'] == 'create')
 {
     $brand = array(
         'name' => $_POST['brand_name'],
