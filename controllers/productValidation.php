@@ -1,62 +1,69 @@
 <?php
-header('Content-Type: application/json');
+header('Content-Type: application/json'); // 
 
-// Get data from both POST and XMLHttpRequest formats
+// Get data from our FormData object payload
 $inputData = [];
 
-// Format 1: XMLHttpRequest with application/x-www-form-urlencoded (validation=JSON)
+// Format 1: FormData payload containing our stringified JSON validation package
 if (isset($_POST['validation'])) 
 {
     $inputData = json_decode($_POST['validation'], true);
 }
-// Format 2: JSON from php://input
+// Format 2: Fallback for raw JSON streams
 elseif ($_SERVER['REQUEST_METHOD'] === 'POST' && !$_FILES) 
 {
     $inputData = json_decode(file_get_contents("php://input"), true);
 }
 
-// Response array
-$response = [
+// Response array 
+$response = 
+[
     'success' => false,
     'errors' => []
 ];
 
-// ==========================================
-// 1. PRODUCT IMAGE VALIDATION FUNCTION
-// ==========================================
 function validateProductImage() 
 {
     global $inputData, $response;
     
+    // Check if the file block wasn't transmitted at all
     if (!isset($_FILES['product_image'])) 
     {
-        $response['errors']['image'] = "No image file provided";
+        $response['errors']['image'] = "No image field detected.";
         return false;
     }
     
     $file = $_FILES['product_image'];
-    $file_name = $file['name'];
-    $file_size = $file['size'];
     $file_error = $file['error'];
     
-    // Rule A: Check for upload errors
+    // FIX: If no file was uploaded, check if it's optional (like during an Edit)
+    if ($file_error === UPLOAD_ERR_NO_FILE) 
+    {
+        // If it's an update scenario, an empty file upload is perfectly valid! 
+        return true; 
+    }
+    
+    // Rule A: Check for other system upload errors 
     if ($file_error !== UPLOAD_ERR_OK) 
     {
         $response['errors']['image'] = "File upload error. Please try again.";
         return false;
     }
     
-    // Rule B: Check format (jpeg, jpg, png)
+    $file_name = $file['name'];
+    $file_size = $file['size'];
+    
+    // Rule B: Check format (jpeg, png) 
     $file_ext = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
-    $allowed_ext = ['jpeg', 'jpg', 'png'];
+    $allowed_ext = ['jpeg',  'png'];
     
     if (!in_array($file_ext, $allowed_ext)) 
     {
-        $response['errors']['image'] = "Only JPEG, JPG, and PNG files are allowed.";
+        $response['errors']['image'] = "Only JPEG and PNG files are allowed.";
         return false;
     }
     
-    // Rule C: Check size (2MB = 2 * 1024 * 1024 bytes)
+    // Rule C: Check size (2MB max) 
     $max_size = 2 * 1024 * 1024;
     
     if ($file_size > $max_size) 
@@ -68,9 +75,6 @@ function validateProductImage()
     return true;
 }
 
-// ==========================================
-// 2. PRODUCT PRICE VALIDATION FUNCTION
-// ==========================================
 function validateProductPrice() 
 {
     global $inputData, $response;
@@ -90,7 +94,7 @@ function validateProductPrice()
         return false;
     }
     
-    // Rule B: Check if price is positive
+    // Rule B: Check if price is positive 
     if ($price <= 0) 
     {
         $response['errors']['price'] = "Price must be a positive number greater than 0.";
@@ -107,21 +111,17 @@ function validateProductPrice()
     return true;
 }
 
-// ==========================================
-// PROCESS REQUEST
-// ==========================================
-
 // Check if this is a validation request
 if ($_SERVER['REQUEST_METHOD'] === 'POST') 
 {
-    // Determine which validation to run
-    if (isset($inputData['action']) || isset($_POST['action'])) 
+    // FIX: Look inside $inputData natively since your JS places "action" inside the JSON packet
+    if (isset($inputData['action'])) 
     {
-        $action = isset($inputData['action']) ? $inputData['action'] : $_POST['action'];
+        $action = $inputData['action'];
         
         if ($action === 'validate_all') 
         {
-            // Validate both price and image
+            // Run validations [cite: 79]
             $isPriceValid = validateProductPrice();
             $isImageValid = validateProductImage();
             
@@ -147,7 +147,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST')
     }
 }
 
-// Send response as JSON
+// Send response as JSON 
 echo json_encode($response);
 
 ?>

@@ -77,15 +77,15 @@ mysqli_close($con);
     <div style="display: flex; gap: 20px;">
         <div style="padding: 20px; border: 1px solid #ccc;">
             <h3>Total Products</h3>
-            <p><?php echo $totalProducts; // From Controller ?></p>
+            <p><?php echo $totalProducts;?></p>
         </div>
         <div style="padding: 20px; border: 1px solid #ccc;">
             <h3>Total Categories</h3>
-            <p><?php echo $totalCategories; // From Controller ?></p>
+            <p><?php echo $totalCategories;?></p>
         </div>
         <div style="padding: 20px; border: 1px solid #ccc;">
             <h3>Total Brands</h3>
-            <p><?php echo $totalBrands; // From Controller ?></p>
+            <p><?php echo $totalBrands;?></p>
         </div>
     </div>
 

@@ -22,8 +22,12 @@ while($row = mysqli_fetch_assoc($resBrand))
     $allBrands[] = $row;
 }
 
-// Get all products
-$sqlProducts = "SELECT * FROM products ORDER BY id DESC";
+// UPGRADE: Join tables so you display Category & Brand Names instead of raw IDs in your table
+$sqlProducts = "SELECT p.*, c.name AS category_name, b.name AS brand_name 
+                FROM products p
+                LEFT JOIN categories c ON p.category_id = c.id
+                LEFT JOIN brands b ON p.brand_id = b.id
+                ORDER BY p.id DESC";
 $resProducts = mysqli_query($con, $sqlProducts);
 $allProducts = [];
 while($row = mysqli_fetch_assoc($resProducts)) 
@@ -46,11 +50,12 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action']) && $_POST['ac
         }
         
         $fileName = basename($_FILES['product_image']['name']);
-        $uploadPath = $uploadDir . time() . '_' . $fileName;
+        $uniqueName = time() . '_' . $fileName;
+        $uploadPath = $uploadDir . $uniqueName;
         
         if(move_uploaded_file($_FILES['product_image']['tmp_name'], $uploadPath)) 
         {
-            $product_image = 'public/uploads/products/' . time() . '_' . $fileName;
+            $product_image = 'public/uploads/products/' . $uniqueName;
         }
     }
     
@@ -69,13 +74,15 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action']) && $_POST['ac
     if($result) 
     {
         header("Location: products.php");
+        exit;
     }
 }
 
 // Handle edit
 if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action']) && $_POST['action'] == 'edit') 
 {
-    $product_image = '';
+    // FIX: Grab the existing image path from hidden state or DB fallback first
+    $product_image = $_POST['existing_image_path']; 
     
     // Handle new image upload if provided
     if(isset($_FILES['product_image']) && $_FILES['product_image']['error'] == 0) 
@@ -87,11 +94,12 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action']) && $_POST['ac
         }
         
         $fileName = basename($_FILES['product_image']['name']);
-        $uploadPath = $uploadDir . time() . '_' . $fileName;
+        $uniqueName = time() . '_' . $fileName;
+        $uploadPath = $uploadDir . $uniqueName;
         
         if(move_uploaded_file($_FILES['product_image']['tmp_name'], $uploadPath)) 
         {
-            $product_image = 'public/uploads/products/' . time() . '_' . $fileName;
+            $product_image = 'public/uploads/products/' . $uniqueName;
         }
     }
     
@@ -104,13 +112,14 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action']) && $_POST['ac
         'category_id' => $_POST['category_id'],
         'brand_id' => $_POST['brand_id'],
         'stock' => $_POST['stock'],
-        'image_path' => $product_image
+        'image_path' => $product_image // Keeps old string if no new file uploaded
     );
     
     $result = editProduct($product);
     if($result) 
     {
         header("Location: products.php");
+        exit;
     }
 }
 
@@ -121,6 +130,7 @@ if(isset($_GET['delete']))
     if($result) 
     {
         header("Location: products.php");
+        exit;
     }
 }
 
@@ -141,12 +151,13 @@ if(isset($_GET['edit'])) {
     <input type="hidden" name="action" value="<?= $editData ? 'edit' : 'create' ?>">
     <?php if($editData): ?>
         <input type="hidden" name="product_id" value="<?= $editData['id'] ?>">
+        <input type="hidden" name="existing_image_path" value="<?= $editData['image_path'] ?>">
     <?php endif; ?>
     
-    <input type="text" name="product_name" placeholder="Product Name" value="<?= $editData ? $editData['name'] : '' ?>" required>
-    <textarea name="description" placeholder="Description"><?= $editData ? $editData['description'] : '' ?></textarea>
-    <textarea name="manufacturer_review" placeholder="Manufacturer Review"><?= $editData ? $editData['manufacturer_review'] : '' ?></textarea>
-    <input type="number" name="price" step="0.01" min="0.01" placeholder="Price" value="<?= $editData ? $editData['price'] : '' ?>" required>
+    <input type="text" name="product_name" placeholder="Product Name" value="<?= $editData ? htmlspecialchars($editData['name']) : '' ?>" required>
+    <textarea name="description" placeholder="Description"><?= $editData ? htmlspecialchars($editData['description']) : '' ?></textarea>
+    <textarea name="manufacturer_review" placeholder="Manufacturer Review"><?= $editData ? htmlspecialchars($editData['manufacturer_review']) : '' ?></textarea>
+    <input type="number" name="price" id="price" step="0.01" min="0.01" placeholder="Price" value="<?= $editData ? $editData['price'] : '' ?>" required>
     
     <select name="category_id" id="cat_select" onchange="fetchBrands(this.value)" required>
         <option value="">Select Category</option>
@@ -165,7 +176,7 @@ if(isset($_GET['edit'])) {
     <input type="file" name="product_image" id="product_image" accept="image/png, image/jpeg" <?= $editData ? '' : 'required' ?>>
     <small>JPEG/PNG, max 2MB <?= $editData ? '(Optional - leave empty to keep current image)' : '' ?></small>
 
-    <input type="number" name="stock" placeholder="Stock Quantity" value="<?= $editData ? $editData['stock'] : '' ?>" required>
+    <input type="number" name="stock" id="stock" placeholder="Stock Quantity" value="<?= $editData ? $editData['stock'] : '' ?>" required>
     <button type="submit"><?= $editData ? 'Update Product' : 'Create Product' ?></button>
     <?php if($editData): ?>
         <a href="products.php"><button type="button">Cancel</button></a>
@@ -177,9 +188,10 @@ if(isset($_GET['edit'])) {
 <hr>
 <h2>All Products</h2>
 
-<table border="1" width="100%">
+<table border="1" width="100%" cellpadding="8" style="border-collapse: collapse; text-align: center;">
     <tr>
         <th>ID</th>
+        <th>Image</th>
         <th>Name</th>
         <th>Category</th>
         <th>Brand</th>
@@ -190,10 +202,17 @@ if(isset($_GET['edit'])) {
     <?php foreach($allProducts as $prod): ?>
     <tr>
         <td><?= $prod['id'] ?></td>
-        <td><?= $prod['name'] ?></td>
-        <td><?= $prod['category_id'] ?></td>
-        <td><?= $prod['brand_id'] ?></td>
-        <td><?= $prod['price'] ?></td>
+        <td>
+            <?php if(!empty($prod['image_path'])): ?>
+                <img src="../<?= $prod['image_path'] ?>" alt="Image" width="60" height="60" style="object-fit: cover; border-radius: 4px;">
+            <?php else: ?>
+                <span>No Image</span>
+            <?php endif; ?>
+        </td>
+        <td><?= htmlspecialchars($prod['name']) ?></td>
+        <td><?= htmlspecialchars($prod['category_name'] ?? 'Uncategorized') ?></td>
+        <td><?= htmlspecialchars($prod['brand_name'] ?? 'Generic') ?></td>
+        <td>$<?= number_format($prod['price'], 2) ?></td>
         <td><?= $prod['stock'] ?></td>
         <td>
             <a href="?edit=<?= $prod['id'] ?>">Edit</a> | 
