@@ -2,10 +2,10 @@
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Host: localhost
--- Generation Time: May 09, 2026 at 11:22 PM
--- Server version: 10.4.28-MariaDB
--- PHP Version: 8.2.4
+-- Host: 127.0.0.1
+-- Generation Time: May 17, 2026 at 01:25 PM
+-- Server version: 10.4.32-MariaDB
+-- PHP Version: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -89,9 +89,7 @@ INSERT INTO `categories` (`id`, `name`, `parent_id`, `created_at`, `updated_at`)
 (6, 'Intel CPU', 1, '2026-05-09 19:00:17', '2026-05-09 19:00:17'),
 (7, 'AMD CPU', 1, '2026-05-09 19:00:17', '2026-05-09 19:00:17'),
 (8, 'DDR4 RAM', 3, '2026-05-09 19:00:17', '2026-05-09 19:00:17'),
-(9, 'DDR5 RAM', 3, '2026-05-09 19:00:17', '2026-05-09 19:00:17'),
-(10, 'SSD', 4, '2026-05-09 19:00:17', '2026-05-09 19:00:17'),
-(11, 'HDD', 4, '2026-05-09 19:00:17', '2026-05-09 19:00:17');
+(10, 'SSD', 4, '2026-05-09 19:00:17', '2026-05-09 19:00:17');
 
 -- --------------------------------------------------------
 
@@ -154,7 +152,8 @@ INSERT INTO `products` (`id`, `name`, `description`, `manufacturer_review`, `pri
 (3, 'NVIDIA RTX 4060', '8GB graphics card', 'Efficient GPU for 1080p ultra gaming.', 42999.00, 2, 3, NULL, 8, '2026-05-09 19:00:17', '2026-05-09 19:00:17'),
 (4, 'Corsair Vengeance 16GB DDR4', '2x8GB memory kit', 'Stable and reliable RAM for mainstream builds.', 6499.00, 8, 4, NULL, 35, '2026-05-09 19:00:17', '2026-05-09 19:00:17'),
 (5, 'Samsung 980 1TB NVMe SSD', 'PCIe NVMe SSD', 'Fast boot and load time, solid reliability.', 9999.00, 10, 5, NULL, 18, '2026-05-09 19:00:17', '2026-05-09 19:00:17'),
-(6, 'LG 24MP400 24-inch Monitor', '24-inch IPS monitor', 'Good color and viewing angle for budget users.', 15999.00, 5, 6, NULL, 12, '2026-05-09 19:00:17', '2026-05-09 19:00:17');
+(6, 'LG 24MP400 24-inch Monitor', '24-inch IPS monitor', 'Good color and viewing angle for budget users.', 15999.00, 5, 6, NULL, 12, '2026-05-09 19:00:17', '2026-05-09 19:00:17'),
+(7, 'AMD RYZEN 5 3600', 'The AMD Ryzen 5 3600 is a highly popular, mid-range desktop processor released in 2019. Built on the 7nm Zen 2 architecture, it features 6 cores and 12 threads, making it a legendary value-for-money option that remains highly capable for budget gaming and multitasking', 'The AMD Ryzen 5 3600 is a highly regarded 6-core, 12-thread processor built on the Zen 2 architecture. Widely praised for its outstanding price-to-performance ratio, it offers excellent gaming and productivity performance in an efficient 65W thermal envelope, making it a legendary choice for budget builders.', 10900.00, 1, 2, 'public/uploads/products/1779015455_item_AMD-Ryzen-5-3600-Processor-price-in-bangladesh-__1654065133-600x600.jpeg', 3, '2026-05-17 10:57:35', '2026-05-17 10:57:35');
 
 -- --------------------------------------------------------
 
@@ -294,7 +293,7 @@ ALTER TABLE `cart`
 -- AUTO_INCREMENT for table `categories`
 --
 ALTER TABLE `categories`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT for table `orders`
@@ -312,7 +311,7 @@ ALTER TABLE `order_items`
 -- AUTO_INCREMENT for table `products`
 --
 ALTER TABLE `products`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `reviews`
