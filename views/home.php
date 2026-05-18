@@ -3,6 +3,7 @@ session_start();
 require_once('../models/userModel.php');
 require_once('../models/categoryModel.php');
 require_once('../models/productModel.php');
+require_once('../models/ReviewModel.php');
 
 if (!isset($_SESSION['user_id']) && isset($_COOKIE['remember_token'])) {
     $token_hash = hash('sha256', $_COOKIE['remember_token']);
@@ -46,6 +47,7 @@ $featuredProducts = getFeaturedProducts();
     <hr>
 
     <h3>Featured Components</h3>
+
     <?php if (count($featuredProducts) > 0) { ?>
         <table border="1" cellpadding="8" cellspacing="0">
             <tr>
@@ -53,6 +55,7 @@ $featuredProducts = getFeaturedProducts();
                 <th>Manufacturer Review</th>
                 <th>Price</th>
             </tr>
+
             <?php foreach ($featuredProducts as $p) { ?>
                 <tr>
                     <td><?php echo htmlspecialchars($p['name']); ?></td>
@@ -72,11 +75,16 @@ $featuredProducts = getFeaturedProducts();
                     </td>
                     <td><?php echo number_format((float)$p['price'], 2); ?></td>
                 </tr>
+
+                <?php include('partials/review_section.php'); ?>
+
             <?php } ?>
         </table>
     <?php } else { ?>
         <p>No featured products found.</p>
     <?php } ?>
+
+    <script src="../public/js/review.js"></script>
 </body>
 
 </html>

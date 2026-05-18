@@ -219,5 +219,24 @@ if(isset($_GET['edit'])) {
             <a href="?delete=<?= $prod['id'] ?>" onclick="return confirm('Delete this product? Image will also be removed.')">Delete</a>
         </td>
     </tr>
+    <tr>
+    <td colspan="8" style="text-align:left; background:#f9f9f9;">
+        <h4>Customer Reviews</h4>
+        <?php
+        require_once('../models/ReviewModel.php');
+        $reviews = getReviewsByProduct($prod['id']);
+
+        if($reviews->num_rows > 0){
+            while($review = $reviews->fetch_assoc()){
+                echo "<p><strong>".htmlspecialchars($review['reviewer_name'])."</strong>: "
+                     .htmlspecialchars($review['comment'])." "
+                     ."<em>({$review['created_at']})</em></p>";
+            }
+        } else {
+            echo "<p>No reviews yet.</p>";
+        }
+        ?>
+    </td>
+</tr>
     <?php endforeach; ?>
 </table>

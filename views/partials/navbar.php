@@ -11,6 +11,11 @@ $role = isset($_SESSION['role']) ? $_SESSION['role'] : 'guest';
         <a href="categories.php">Categories</a> | 
         <a href="brands.php">Brands</a> | 
         <a href="products.php">Products</a> |
+
+        <!-- Done by: 22-49926-3 -->
+        <!-- Task 4: Admin navigation links for removing customers and reviews -->
+        <a href="admin_customers.php">Remove Customers</a> |
+        <a href="admin_reviews.php">Remove Reviews</a> |
         
         <a href="../controllers/logout.php">Logout</a>
     <?php } else if ($role == 'customer') { ?>
