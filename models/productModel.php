@@ -1,41 +1,76 @@
 <?php
-require_once('../config/db.php');
+// models/productModel.php
+require_once __DIR__ . '/../config/db.php';
 
-function getFeaturedProducts()
-{
+function searchAndFilterProducts($q, $minPrice, $maxPrice, $catId, $brandId) {
     $con = getConnection();
-    $sql = "select id, name, manufacturer_review, price, category_id from products order by created_at desc limit 6";
-    $result = mysqli_query($con, $sql);
+    
+    // Base query
+    $sql = "SELECT p.*, b.name as brand_name FROM products p 
+            LEFT JOIN brands b ON p.brand_id = b.id WHERE 1=1";
+    $types = "";
+    $params = [];
 
-    $products = [];
-    while ($row = mysqli_fetch_assoc($result)) {
-        $products[] = $row;
+    // Search query keyword check
+    if (!empty($q)) {
+        $sql .= " AND p.name LIKE ?";
+        $params[] = "%" . $q . "%";
+        $types .= "s";
+    }
+    
+    // Explicit numeric sanitation bounds to completely fix condition 5
+    $finalMin = ($minPrice !== '' && $minPrice !== null) ? floatval($minPrice) : 0.0;
+    $finalMax = ($maxPrice !== '' && $maxPrice !== null && floatval($maxPrice) > 0) ? floatval($maxPrice) : 99999999.0;
+
+    $sql .= " AND p.price >= ? AND p.price <= ?";
+    $params[] = $finalMin;
+    $params[] = $finalMax;
+    $types .= "dd";
+
+    if (!empty($catId)) {
+        $sql .= " AND p.category_id = ?";
+        $params[] = intval($catId);
+        $types .= "i";
+    }
+    if (!empty($brandId)) {
+        $sql .= " AND p.brand_id = ?";
+        $params[] = intval($brandId);
+        $types .= "i";
     }
 
-    mysqli_close($con);
+    $stmt = mysqli_prepare($con, $sql);
+    if (!empty($params)) {
+        mysqli_stmt_bind_param($stmt, $types, ...$params);
+    }
+    
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+    $data = mysqli_fetch_all($res, MYSQLI_ASSOC);
+    mysqli_stmt_close($stmt);
+    return $data;
+}
+
+function getFeaturedProducts() {
+    $con = getConnection();
+    $query = "SELECT * FROM products ORDER BY id ASC";
+    $result = mysqli_query($con, $query);
+    $products = mysqli_fetch_all($result, MYSQLI_ASSOC);
     return $products;
 }
 
-function getProductsByTopCategory($category_id)
-{
+function getProductById($id) {
     $con = getConnection();
-    $sql = "select p.id, p.name, p.manufacturer_review, p.price, c.name as category_name
-                from products p
-                inner join categories c on c.id = p.category_id
-                where c.id=? or c.parent_id=?
-                order by p.created_at desc";
-    $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "ii", $category_id, $category_id);
+    $query = "SELECT p.*, c.name as category_name, b.name as brand_name 
+              FROM products p
+              LEFT JOIN categories c ON p.category_id = c.id
+              LEFT JOIN brands b ON p.brand_id = b.id
+              WHERE p.id = ?";
+    $stmt = mysqli_prepare($con, $query);
+    mysqli_stmt_bind_param($stmt, "i", $id);
     mysqli_stmt_execute($stmt);
-    $result = mysqli_stmt_get_result($stmt);
-
-    $products = [];
-    while ($row = mysqli_fetch_assoc($result)) {
-        $products[] = $row;
-    }
-
+    $res = mysqli_stmt_get_result($stmt);
+    $product = mysqli_fetch_assoc($res);
     mysqli_stmt_close($stmt);
-    mysqli_close($con);
-    return $products;
+    return $product;
 }
 ?>
