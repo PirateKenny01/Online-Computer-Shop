@@ -221,7 +221,6 @@ git push origin feature/task1-22483563
 - Ensure database user and password match
 
 ### Session Issues
-- Ensure `config/bootstrap.php` is included before any output
 - Check that `session_start()` is called early in the bootstrap
 
 ### File Upload Issues
