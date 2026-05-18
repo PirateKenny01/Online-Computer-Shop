@@ -4,7 +4,6 @@ require_once('../models/categoryManagementModel.php');
 
 $con = getConnection();
 
-// Get all categories
 $sql = "SELECT * FROM categories ORDER BY parent_id, name";
 $result = mysqli_query($con, $sql);
 $allCategories = [];
@@ -13,7 +12,6 @@ while($row = mysqli_fetch_assoc($result))
     $allCategories[] = $row;
 }
 
-// Get main categories only (parent_id = NULL)
 $sqlMain = "SELECT * FROM categories WHERE parent_id IS NULL ORDER BY name";
 $resultMain = mysqli_query($con, $sqlMain);
 $mainCategories = [];
@@ -22,7 +20,6 @@ while($row = mysqli_fetch_assoc($resultMain))
     $mainCategories[] = $row;
 }
 
-// Handle create
 if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action']) && $_POST['action'] == 'create') 
 {
     $category = array(
@@ -36,7 +33,6 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action']) && $_POST['ac
     }
 }
 
-// Handle edit
 if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action']) && $_POST['action'] == 'edit') 
 {
     $category = array(
@@ -51,7 +47,6 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action']) && $_POST['ac
     }
 }
 
-// Handle delete
 if(isset($_GET['delete'])) 
 {
     $result = deleteCategory($_GET['delete']);
@@ -65,7 +60,6 @@ if(isset($_GET['delete']))
     }
 }
 
-// Get edit data if edit is requested
 $editData = null;
 if(isset($_GET['edit'])) 
 {
@@ -76,17 +70,30 @@ if(isset($_GET['edit']))
 
 ?>
 
-<?php include('partials/navbar.php'); ?>
+<!DOCTYPE html>
+  <html lang="en">
+  <head>
 
-<h1>Category Management</h1>
+    <meta charset="UTF-8">
+    <title>Category Management - Online Computer Shop</title>
+    <link rel="stylesheet" href="../public/css/style.css">
 
-<?php 
-    if(isset($deleteError)): ?>
-    <p style="color: red;"><?= $deleteError ?></p>
-<?php endif; 
-?>
+  </head>
 
-<form method="POST" action="">
+  <body>
+
+     <?php include('partials/navbar.php'); ?>
+
+     <h1>Category Management</h1>
+
+     <?php 
+         if(isset($deleteError)): ?>
+         <p style="color: red;"><?= $deleteError ?></p>
+         <?php endif; 
+     ?>
+
+<form method="POST">
+
     <input type="hidden" name="action" value="<?= $editData ? 'edit' : 'create' ?>">
     <?php if($editData): ?>
         <input type="hidden" name="cat_id" value="<?= $editData['id'] ?>">
@@ -107,16 +114,20 @@ if(isset($_GET['edit']))
     <?php if($editData): ?>
         <a href="categories.php"><button type="button">Cancel</button></a>
     <?php endif; ?>
+
 </form>
 
 <table border="1" width="100%">
+
     <tr>
         <th>ID</th>
         <th>Name</th>
         <th>Type</th>
         <th>Actions</th>
     </tr>
+
     <?php foreach($allCategories as $cat): ?>
+
     <tr>
         <td><?= $cat['id'] ?></td>
         <td><?= $cat['name'] ?></td>
@@ -126,5 +137,10 @@ if(isset($_GET['edit']))
             <a href="?delete=<?= $cat['id'] ?>" onclick="return confirm('Delete this category? Cannot delete if it has child categories or products.')">Delete</a>
         </td>
     </tr>
+
     <?php endforeach; ?>
+
 </table>
+
+     </body>
+</html>

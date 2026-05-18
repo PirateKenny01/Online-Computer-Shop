@@ -46,7 +46,6 @@ function deleteCategory(int $id): bool
     $con = getConnection();
     $id = (int)$id;
     
-    // Check if category has child categories
     $checkChild = "SELECT COUNT(*) as child_count FROM categories WHERE parent_id = $id";
     $childResult = mysqli_query($con, $checkChild);
     if($childResult) 
@@ -58,7 +57,6 @@ function deleteCategory(int $id): bool
         }
     }
     
-    // Check if category has products
     $checkProduct = "SELECT COUNT(*) as product_count FROM products WHERE category_id = $id";
     $productResult = mysqli_query($con, $checkProduct);
     if($productResult) 
@@ -70,7 +68,6 @@ function deleteCategory(int $id): bool
         }
     }
     
-    // Delete category
     $sql = "DELETE FROM categories WHERE id = $id";
     
     if (mysqli_query($con, $sql))

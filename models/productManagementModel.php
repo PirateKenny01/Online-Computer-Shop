@@ -65,20 +65,20 @@ function deleteProduct(int $id): bool
     $con = getConnection();
     $id = (int)$id;
     
-    // Get product image path before deleting
     $sqlGet = "SELECT image_path FROM products WHERE id = $id";
     $resultGet = mysqli_query($con, $sqlGet);
-    if($resultGet) {
+    if($resultGet) 
+    {
         $row = mysqli_fetch_assoc($resultGet);
         $image_path = $row['image_path'];
         
         // Delete image file if it exists
-        if($image_path && file_exists('../' . $image_path)) {
+        if($image_path && file_exists('../' . $image_path)) 
+        {
             unlink('../' . $image_path);
         }
     }
     
-    // Delete product from database
     $sql = "DELETE FROM products WHERE id = $id";
     
     if (mysqli_query($con, $sql))

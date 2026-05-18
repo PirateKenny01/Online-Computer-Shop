@@ -75,7 +75,20 @@ if(isset($_GET['edit'])) {
 
 ?>
 
-<?php include('partials/navbar.php'); ?>
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+
+    <meta charset="UTF-8">
+    <title>Brand Management - Online Computer Shop</title>
+    <link rel="stylesheet" href="../public/css/style.css">
+
+  </head>
+
+  <body>
+
+    <?php include('partials/navbar.php'); ?>
 
 <h1>Brand Management</h1>
 
@@ -83,7 +96,8 @@ if(isset($_GET['edit'])) {
     <p style="color: red;"><?= $deleteError ?></p>
 <?php endif; ?>
 
-<form method="POST" action="">
+<form method="POST">
+
     <input type="hidden" name="action" value="<?= $editData ? 'edit' : 'create' ?>">
     <?php if($editData): ?>
         <input type="hidden" name="brand_id" value="<?= $editData['id'] ?>">
@@ -107,13 +121,16 @@ if(isset($_GET['edit'])) {
 <h2>All Brands</h2>
 
 <table border="1" width="100%">
+
     <tr>
         <th>ID</th>
         <th>Brand Name</th>
         <th>Category</th>
         <th>Actions</th>
     </tr>
+
     <?php foreach($brands as $brand): ?>
+
     <tr>
         <td><?= $brand['id'] ?></td>
         <td><?= $brand['name'] ?></td>
@@ -123,5 +140,10 @@ if(isset($_GET['edit'])) {
             <a href="?delete=<?= $brand['id'] ?>" onclick="return confirm('Delete this brand? Cannot delete if products are assigned.')">Delete</a>
         </td>
     </tr>
+
     <?php endforeach; ?>
+
 </table>
+
+    </body>
+</html>

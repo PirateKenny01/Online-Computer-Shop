@@ -4,7 +4,6 @@ require_once('../models/productManagementModel.php');
 
 $con = getConnection();
 
-// Get all categories
 $sqlCat = "SELECT * FROM categories ORDER BY name";
 $resCat = mysqli_query($con, $sqlCat);
 $allCategories = [];
@@ -13,7 +12,6 @@ while($row = mysqli_fetch_assoc($resCat))
     $allCategories[] = $row;
 }
 
-// Get all brands (initially all brands)
 $sqlBrand = "SELECT * FROM brands ORDER BY name";
 $resBrand = mysqli_query($con, $sqlBrand);
 $allBrands = [];
@@ -22,7 +20,6 @@ while($row = mysqli_fetch_assoc($resBrand))
     $allBrands[] = $row;
 }
 
-// UPGRADE: Join tables so you display Category & Brand Names instead of raw IDs in your table
 $sqlProducts = "SELECT p.*, c.name AS category_name, b.name AS brand_name 
                 FROM products p
                 LEFT JOIN categories c ON p.category_id = c.id
@@ -35,12 +32,10 @@ while($row = mysqli_fetch_assoc($resProducts))
     $allProducts[] = $row;
 }
 
-// Handle create
 if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action']) && $_POST['action'] == 'create') 
 {
     $product_image = '';
     
-    // Handle image upload
     if(isset($_FILES['product_image']) && $_FILES['product_image']['error'] == 0) 
     {
         $uploadDir = '../public/uploads/products/';
@@ -78,13 +73,10 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action']) && $_POST['ac
     }
 }
 
-// Handle edit
 if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action']) && $_POST['action'] == 'edit') 
 {
-    // FIX: Grab the existing image path from hidden state or DB fallback first
     $product_image = $_POST['existing_image_path']; 
     
-    // Handle new image upload if provided
     if(isset($_FILES['product_image']) && $_FILES['product_image']['error'] == 0) 
     {
         $uploadDir = '../public/uploads/products/';
@@ -112,7 +104,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action']) && $_POST['ac
         'category_id' => $_POST['category_id'],
         'brand_id' => $_POST['brand_id'],
         'stock' => $_POST['stock'],
-        'image_path' => $product_image // Keeps old string if no new file uploaded
+        'image_path' => $product_image
     );
     
     $result = editProduct($product);
@@ -123,7 +115,6 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action']) && $_POST['ac
     }
 }
 
-// Handle delete
 if(isset($_GET['delete'])) 
 {
     $result = deleteProduct($_GET['delete']);
@@ -134,7 +125,6 @@ if(isset($_GET['delete']))
     }
 }
 
-// Get edit data if edit is requested
 $editData = null;
 if(isset($_GET['edit'])) {
     $sqlEdit = "SELECT * FROM products WHERE id = " . (int)$_GET['edit'];
@@ -143,11 +133,26 @@ if(isset($_GET['edit'])) {
 }
 
 ?>
-<?php include('partials/navbar.php'); ?>
+
+<!DOCTYPE html>
+   <html lang="en">
+
+  <head>
+
+    <meta charset="UTF-8">
+    <title>Product Management - Online Computer Shop</title>
+    <link rel="stylesheet" href="../public/css/style.css">
+
+  </head>
+
+  <body>
+
+    <?php include('partials/navbar.php'); ?>
 
 <h1>Product Management</h1>
 
 <form method="POST" action="" enctype="multipart/form-data" id="productForm">
+
     <input type="hidden" name="action" value="<?= $editData ? 'edit' : 'create' ?>">
     <?php if($editData): ?>
         <input type="hidden" name="product_id" value="<?= $editData['id'] ?>">
@@ -174,13 +179,14 @@ if(isset($_GET['edit'])) {
     </select>
 
     <input type="file" name="product_image" id="product_image" accept="image/png, image/jpeg" <?= $editData ? '' : 'required' ?>>
-    <small>JPEG/PNG, max 2MB <?= $editData ? '(Optional - leave empty to keep current image)' : '' ?></small>
+    <small>JPEG/PNG, max 2MB</small>
 
     <input type="number" name="stock" id="stock" placeholder="Stock Quantity" value="<?= $editData ? $editData['stock'] : '' ?>" required>
     <button type="submit"><?= $editData ? 'Update Product' : 'Create Product' ?></button>
     <?php if($editData): ?>
         <a href="products.php"><button type="button">Cancel</button></a>
     <?php endif; ?>
+
 </form>
 
 <script src="../public/js/productValidation.js"></script>
@@ -189,6 +195,7 @@ if(isset($_GET['edit'])) {
 <h2>All Products</h2>
 
 <table border="1" width="100%" cellpadding="8" style="border-collapse: collapse; text-align: center;">
+
     <tr>
         <th>ID</th>
         <th>Image</th>
@@ -199,7 +206,9 @@ if(isset($_GET['edit'])) {
         <th>Stock</th>
         <th>Actions</th>
     </tr>
+
     <?php foreach($allProducts as $prod): ?>
+
     <tr>
         <td><?= $prod['id'] ?></td>
         <td>
@@ -219,5 +228,10 @@ if(isset($_GET['edit'])) {
             <a href="?delete=<?= $prod['id'] ?>" onclick="return confirm('Delete this product? Image will also be removed.')">Delete</a>
         </td>
     </tr>
+
     <?php endforeach; ?>
+
 </table>
+
+        </body>
+</html>

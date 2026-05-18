@@ -1,7 +1,6 @@
 <?php
 require_once('../config/db.php');
 
-// Tell the browser to interpret this file's output as clean JSON data, not HTML
 header('Content-Type: application/json');
 
 if (isset($_GET['category_id'])) 
@@ -21,7 +20,6 @@ if (isset($_GET['category_id']))
         ];
     }
     
-    // Output only the clean array data
     echo json_encode($brands);
 } 
 else 

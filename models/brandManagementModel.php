@@ -46,7 +46,6 @@ function deleteBrand(int $id): bool
     $con = getConnection();
     $id = (int)$id;
     
-    // Check if brand has products
     $checkProduct = "SELECT COUNT(*) as product_count FROM products WHERE brand_id = $id";
     $productResult = mysqli_query($con, $checkProduct);
     if($productResult) {
@@ -57,7 +56,6 @@ function deleteBrand(int $id): bool
         }
     }
     
-    // Delete brand
     $sql = "DELETE FROM brands WHERE id = $id";
     
     if (mysqli_query($con, $sql))

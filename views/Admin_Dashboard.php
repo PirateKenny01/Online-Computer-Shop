@@ -1,18 +1,15 @@
 <?php
-session_start();
 
-// Check if user is admin
+require_once('../config/db.php');
+session_start();
 if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') 
 {
     header('Location: login.php');
     exit();
 }
 
-require_once('../config/db.php');
-
 $con = getConnection();
 
-// Check connection
 if (!$con) 
 {
     die("Database connection failed!");
@@ -63,40 +60,54 @@ while($row = mysqli_fetch_assoc($resAllProducts))
 
 mysqli_close($con);
 ?>
+
 <!DOCTYPE html>
-<html lang="en">
-<head>
+   <html lang="en">
+   <head>
+
     <meta charset="UTF-8">
     <title>Admin Dashboard - Online Computer Shop</title>
-    <link rel="stylesheet" href="../public/css/style.css"> </head>
-<body>
+    <link rel="stylesheet" href="../public/css/style.css">
+
+   </head>
+
+   <body>
 
     <?php include 'partials/navbar.php'; ?>
 
     <h1>Dashboard Summary</h1>
+
     <div style="display: flex; gap: 20px;">
+
         <div style="padding: 20px; border: 1px solid #ccc;">
             <h3>Total Products</h3>
             <p><?php echo $totalProducts;?></p>
         </div>
+
         <div style="padding: 20px; border: 1px solid #ccc;">
             <h3>Total Categories</h3>
             <p><?php echo $totalCategories;?></p>
         </div>
+
         <div style="padding: 20px; border: 1px solid #ccc;">
             <h3>Total Brands</h3>
             <p><?php echo $totalBrands;?></p>
         </div>
+
     </div>
 
     <h2>Low Stock Alerts (Stock < 5)</h2>
+
     <table border="1" width="100%">
+
         <tr>
             <th>Product Name</th>
             <th>Current Stock</th>
             <th>Action</th>
         </tr>
+
         <?php foreach($allProductsList as $item): ?>
+
         <tr>
             <td><?= $item['name'] ?></td>
             <td style="<?= ($item['stock'] < 5) ? 'color: red; font-weight: bold;' : 'color: green;' ?>"><?= $item['stock'] ?></td>
@@ -108,7 +119,10 @@ mysqli_close($con);
                 <?php endif; ?>
             </td>
         </tr>
+
         <?php endforeach; ?>
+
     </table>
-</body>
+
+   </body>
 </html>

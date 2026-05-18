@@ -74,23 +74,52 @@ logs/
 ## Project Structure
 
 ```
-Online-Computer-Shop/
-├── config/              # Configuration files
-│   ├── db.php          # Database connection
-├── controllers/         # Request handlers
-│   └── Controller.php   # Base controller class
-├── models/             # Data models
-├── views/              # View templates (HTML)
-├── public/             # Public assets
-│   ├── css/           # Stylesheets
-│   ├── js/            # JavaScript files
-│   └── uploads/       # User uploads
-│       └── products/  # Product images
-├── api/               # AJAX endpoints
-├── database.sql       # Database schema
-├── index.php          # Application entry point
-└── README.md          # This file
-```
+ONLINE-COMPUTER-SHOP
+│
+├── config/                        
+│   └── db.php
+│
+├── controllers/                    
+│   ├── adminCreateUserCheck.php
+│   ├── Controller.php
+│   ├── getBrands.php              
+│   ├── loginCheck.php
+│   ├── logout.php
+│   ├── passwordChangeCheck.php
+│ 
+│   ├── productValidation.php       
+│   ├── profileUpdateCheck.php
+│   └── signupCheck.php
+│
+├── models/                        
+│   ├── brandManagementModel.php
+│   ├── categoryManagementModel.php
+│   ├── categoryModel.php
+│   ├── productManagementModel.php
+│   ├── productModel.php
+│   └── userModel.php
+│
+├── public/                         
+│   ├── css/
+│   │   └── style.css
+│   ├── js/
+│   │   ├── main.js
+│   │   └── productValidation.js
+│   └── uploads/                   
+│
+└── views/                          
+    ├── partials/
+    │   └── navbar.php
+    ├── admin_create_user.php
+    ├── Admin_Dashboard.php
+    ├── brands.php
+    ├── categories.php
+    ├── category.php              
+    ├── home.php
+    ├── login.php
+    ├── products.php                
+    ├── profile.php
+    └── signup.php
 
 ## Technical Requirements
 
@@ -158,8 +187,8 @@ git push origin feature/task1-22483563
 ## Testing
 
 ### Test Accounts (to be created)
-- Admin: admin@example.com (password: password123)
-- Customer: customer@example.com (password: password123)
+- Admin: papiapriya214@gmail.com (password: 12345678)
+- Customer: papia@gmail.com (password: 12345678)
 
 ### Key Features to Test
 1. User registration with email validation
