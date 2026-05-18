@@ -18,6 +18,8 @@ require_once('../config/db.php');
 $con = getConnection();
 
 if (!$con) 
+
+    
 {
     die("Database connection failed!");
 }
@@ -124,6 +126,6 @@ mysqli_close($con);
         <?php } ?>
     </table>
 
-    <script src="../public/js/admin_task4.js?v=300"></script>
+<script src="../public/js/admin_task4.js?v=500"></script>
 </body>
 </html>

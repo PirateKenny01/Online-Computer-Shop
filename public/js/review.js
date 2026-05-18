@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 return;
             }
 
-            fetch('../controllers/ReviewController.php', {
+            fetch('/webtech/Online-Computer-Shop/controllers/ReviewController.php', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded'
@@ -32,12 +32,28 @@ document.addEventListener('DOMContentLoaded', function () {
                       '&comment=' + encodeURIComponent(comment)
             })
             .then(function (response) {
-                return response.json();
+                return response.text();
             })
-            .then(function (data) {
+            .then(function (text) {
+                console.log(text);
+
+                let data;
+
+                try {
+                    data = JSON.parse(text);
+                } catch (error) {
+                    alert('Controller returned PHP error. Check Console.');
+                    return;
+                }
+
                 if (data.success) {
                     const review = data.review;
                     const reviewList = document.getElementById('reviews-list-' + productId);
+
+                    if (!reviewList) {
+                        alert('Review list area not found.');
+                        return;
+                    }
 
                     const noReviewMessage = reviewList.querySelector('.no-review-message');
                     if (noReviewMessage) {
@@ -48,7 +64,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         <div id="review-${review.id}" style="border:1px solid #ccc; padding:8px; margin-bottom:8px;">
                             <p>
                                 <strong>${escapeHtml(review.reviewer_name)}</strong>
-                                <em>(${review.created_at})</em>
+                                <em>(${escapeHtml(review.created_at)})</em>
                             </p>
 
                             <p id="review-text-${review.id}">
@@ -59,7 +75,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             <button type="button" onclick="deleteReview(${review.id})">Delete</button>
 
                             <div id="edit-box-${review.id}" style="display:none; margin-top:8px;">
-                                <textarea id="edit-comment-${review.id}" maxlength="500">${escapeHtml(review.comment)}</textarea>
+                                <textarea id="edit-comment-${review.id}" maxlength="500" style="width:100%; height:60px;">${escapeHtml(review.comment)}</textarea>
                                 <br>
                                 <button type="button" onclick="updateReview(${review.id})">Update</button>
                                 <button type="button" onclick="hideEditBox(${review.id})">Cancel</button>
@@ -75,8 +91,9 @@ document.addEventListener('DOMContentLoaded', function () {
                     alert(data.error || 'Failed to add review');
                 }
             })
-            .catch(function () {
-                alert('Something went wrong. Check ReviewController.php path.');
+            .catch(function (error) {
+                console.log(error);
+                alert('JS fetch error. Open Inspect > Console to see details.');
             });
         });
     });
@@ -104,7 +121,7 @@ function updateReview(reviewId) {
         return;
     }
 
-    fetch('../controllers/ReviewController.php', {
+    fetch('/webtech/Online-Computer-Shop/controllers/ReviewController.php', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded'
@@ -113,9 +130,20 @@ function updateReview(reviewId) {
               '&comment=' + encodeURIComponent(comment)
     })
     .then(function (response) {
-        return response.json();
+        return response.text();
     })
-    .then(function (data) {
+    .then(function (text) {
+        console.log(text);
+
+        let data;
+
+        try {
+            data = JSON.parse(text);
+        } catch (error) {
+            alert('Controller returned PHP error. Check Console.');
+            return;
+        }
+
         if (data.success) {
             document.getElementById('review-text-' + reviewId).innerText = data.comment;
             hideEditBox(reviewId);
@@ -123,6 +151,10 @@ function updateReview(reviewId) {
         } else {
             alert(data.error || 'Failed to update review');
         }
+    })
+    .catch(function (error) {
+        console.log(error);
+        alert('JS fetch error. Open Inspect > Console to see details.');
     });
 }
 
@@ -131,7 +163,7 @@ function deleteReview(reviewId) {
         return;
     }
 
-    fetch('../controllers/ReviewController.php', {
+    fetch('/webtech/Online-Computer-Shop/controllers/ReviewController.php', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded'
@@ -139,14 +171,34 @@ function deleteReview(reviewId) {
         body: 'action=delete&review_id=' + encodeURIComponent(reviewId)
     })
     .then(function (response) {
-        return response.json();
+        return response.text();
     })
-    .then(function (data) {
+    .then(function (text) {
+        console.log(text);
+
+        let data;
+
+        try {
+            data = JSON.parse(text);
+        } catch (error) {
+            alert('Controller returned PHP error. Check Console.');
+            return;
+        }
+
         if (data.success) {
-            document.getElementById('review-' + reviewId).remove();
+            const reviewBox = document.getElementById('review-' + reviewId);
+
+            if (reviewBox) {
+                reviewBox.remove();
+            }
+
             alert('Review deleted successfully');
         } else {
             alert(data.error || 'Failed to delete review');
         }
+    })
+    .catch(function (error) {
+        console.log(error);
+        alert('JS fetch error. Open Inspect > Console to see details.');
     });
 }

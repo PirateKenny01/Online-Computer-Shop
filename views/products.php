@@ -219,6 +219,7 @@ if(isset($_GET['edit'])) {
             <a href="?delete=<?= $prod['id'] ?>" onclick="return confirm('Delete this product? Image will also be removed.')">Delete</a>
         </td>
     </tr>
+    //kabirs code for reviews
     <tr>
     <td colspan="8" style="text-align:left; background:#f9f9f9;">
         <h4>Customer Reviews</h4>
@@ -240,3 +241,39 @@ if(isset($_GET['edit'])) {
 </tr>
     <?php endforeach; ?>
 </table>
+
+
+    <?php endforeach; ?>
+</table>
+
+<script>
+document.querySelectorAll('.reviewForm').forEach(form => {
+    form.addEventListener('submit', function(e){
+        e.preventDefault();
+
+        const productId = this.dataset.product;
+        const comment = this.querySelector('textarea[name="comment"]').value.trim();
+
+        if(comment === ""){
+            alert("Review cannot be empty");
+            return;
+        }
+
+        fetch('../controllers/ReviewController.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: 'action=add&product_id=' + productId + '&comment=' + encodeURIComponent(comment)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if(data.success){
+                alert("Review added successfully");
+                location.reload();
+            } else {
+                alert(data.error);
+            }
+        });
+    });
+});

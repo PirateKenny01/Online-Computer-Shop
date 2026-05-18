@@ -47,7 +47,6 @@ $featuredProducts = getFeaturedProducts();
     <hr>
 
     <h3>Featured Components</h3>
-
     <?php if (count($featuredProducts) > 0) { ?>
         <table border="1" cellpadding="8" cellspacing="0">
             <tr>
@@ -84,7 +83,7 @@ $featuredProducts = getFeaturedProducts();
         <p>No featured products found.</p>
     <?php } ?>
 
-    <script src="../public/js/review.js"></script>
+    <script src="../public/js/review.js?v=200"></script>
 </body>
 
 </html>

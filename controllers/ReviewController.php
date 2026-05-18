@@ -11,7 +11,7 @@ header('Content-Type: application/json');
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     echo json_encode([
         'success' => false,
-        'error' => 'ReviewController is working. Submit form using POST.'
+        'error' => 'Controller is working. Use POST request from review form.'
     ]);
     exit;
 }
@@ -54,12 +54,10 @@ if ($action == 'add') {
         exit;
     }
 
-    $review_id = addReview(
-        $product_id,
-        $_SESSION['user_id'],
-        $_SESSION['name'],
-        $comment
-    );
+    $user_id = $_SESSION['user_id'];
+    $reviewer_name = $_SESSION['name'];
+
+    $review_id = addReview($product_id, $user_id, $reviewer_name, $comment);
 
     if ($review_id) {
         $review = getReviewById($review_id);
@@ -69,13 +67,13 @@ if ($action == 'add') {
             'review' => $review
         ]);
         exit;
+    } else {
+        echo json_encode([
+            'success' => false,
+            'error' => 'Database insert failed'
+        ]);
+        exit;
     }
-
-    echo json_encode([
-        'success' => false,
-        'error' => 'Database insert failed'
-    ]);
-    exit;
 }
 
 if ($action == 'update') {
